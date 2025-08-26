@@ -18,7 +18,7 @@ impl From<serde_json::Error> for GetError {
     }
 }
 
-pub async fn make_json_get_request<T: serde::de::DeserializeOwned>(url: &str) -> Result<T, GetError> {
+pub async fn make_json_get_request<T: serde::de::DeserializeOwned + std::marker::Unpin>(url: &str) -> Result<T, GetError> {
     let mut response = isahc::get_async(url).await?;
-    return Ok(response.json::<T>()?);
+    return Ok(response.json::<T>().await?);
 }
